@@ -46,12 +46,14 @@ class SendGridMailer
              subject: nil,
              to: nil,
              dynamic_template_data: nil,
+             categories: nil,
              open_tracking: nil,
              click_tracking: nil)
     self.template_id = template_id if template_id
     self.from = from if from
     self.from_name = from_name if from_name
     self.subject = subject if subject
+    self.categories = categories if categories
 
     self.open_tracking(open_tracking) unless open_tracking.nil?
     self.click_tracking(click_tracking) unless click_tracking.nil?
@@ -105,6 +107,16 @@ class SendGridMailer
     personalization.add_dynamic_template_data dynamic_template_data if dynamic_template_data
 
     sg_mail.add_personalization personalization
+  end
+
+  def categories
+    sg_mail.categories
+  end
+
+  def categories=(categories)
+    categories.each do |category|
+      sg_mail.add_category Category.new(name: category)
+    end
   end
 
   def tracking_settings

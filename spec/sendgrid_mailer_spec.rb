@@ -105,6 +105,12 @@ RSpec.describe SendGridMailer do
       ]
     end
 
+    it 'can add categories' do
+      mailer = TestMailer.mailer categories: %w[one two three]
+
+      expect(mailer.categories).to eql %w[one two three]
+    end
+
     describe 'tracking' do
       describe 'click tracking' do
         it 'does not set click tracking by default' do
