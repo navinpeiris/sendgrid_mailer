@@ -3,7 +3,7 @@ ENV['RACK_ENV'] ||= 'test'
 unless ENV['COVERAGE'] == 'false'
   require 'simplecov'
   SimpleCov.start do
-    minimum_coverage 95
+    minimum_coverage 90
   end
 end
 
