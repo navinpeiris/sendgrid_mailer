@@ -26,14 +26,18 @@ class SendGridMailer
     instance_methods.include?(method.to_sym) || super
   end
 
-  def mail(template_id: nil,
+  def mail(template_id: nil, # rubocop:disable Metrics/ParameterLists
            from: nil,
            from_name: nil,
-           subject: nil)
+           subject: nil,
+           to: nil,
+           dynamic_template_data: nil)
     self.template_id = template_id if template_id
     self.from = from if from
     self.from_name = from_name if from_name
     self.subject = subject if subject
+
+    add_personalization(to, dynamic_template_data: dynamic_template_data) if to
 
     self
   end
@@ -68,6 +72,18 @@ class SendGridMailer
 
   def subject=(subject)
     sg_mail.subject = subject
+  end
+
+  def personalizations
+    sg_mail.personalizations
+  end
+
+  def add_personalization(to, dynamic_template_data: nil)
+    personalization = Personalization.new
+    personalization.add_to to
+    personalization.add_dynamic_template_data dynamic_template_data if dynamic_template_data
+
+    sg_mail.add_personalization personalization
   end
 
   def sg_mail

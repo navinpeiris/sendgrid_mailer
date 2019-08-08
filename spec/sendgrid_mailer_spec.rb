@@ -47,4 +47,28 @@ RSpec.describe SendGridMailer do
     expect(mail.from).to eql 'notifications@example.com'
     expect(mail.subject).to eql 'Hello from example'
   end
+
+  it 'adds personalization if to email is provided' do
+    mail = DefaultsMailer.mail(to: 'someone@example.com', dynamic_template_data: { one: '1' })
+
+    expect(mail.personalizations.length).to eql 1
+
+    expect(mail.personalizations[0]['to']).to eql ['"someone@example.com"']
+    expect(mail.personalizations[0]['dynamic_template_data']).to eql one: '1'
+  end
+
+  it 'can add personalizations' do
+    mail = DefaultsMailer.mail
+
+    mail.add_personalization('one@example.com', dynamic_template_data: { one: '1' })
+    mail.add_personalization('two@example.com', dynamic_template_data: { two: '2' })
+
+    expect(mail.personalizations.length).to eql 2
+
+    expect(mail.personalizations[0]['to']).to eql ['"one@example.com"']
+    expect(mail.personalizations[0]['dynamic_template_data']).to eql one: '1'
+
+    expect(mail.personalizations[1]['to']).to eql ['"two@example.com"']
+    expect(mail.personalizations[1]['dynamic_template_data']).to eql two: '2'
+  end
 end
