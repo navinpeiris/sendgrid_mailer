@@ -20,7 +20,100 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Configuration
+
+Configure the SendGrid API key to be used by the mailer by placing the following in the `config/initializers/sendgrid_mailer.rb` file:
+
+```ruby
+SendGridMailer.configure do |config|
+  config.api_key = ENV['SENDGRID_API_KEY']
+end
+```
+
+### Adding a new mailer
+
+A new mailer can be created similar to the way you create a typical Rails mailer, for example:
+
+```ruby
+class AccountMailer < SendGridMailer
+  # Optionally provide defaults by either specifying an attribute at a time or multiple
+  default from: 'support@example.com', from_name: 'Hello from Example'
+
+  def welcome_email(user)
+    mailer template_id: 'sendgrid-template-id',
+           from: 'hello@example.com', # Defaults can be overridden here
+           subject: 'Welcome to Example App',
+           to: user.email,
+           dynamic_template_data: {
+               homepage_url: "http://example.com/#{user.handle}"
+           },
+           open_tracking: true, # optional
+           click_tracking: true # optional
+  end
+
+  def newsletter(users)
+    users.each do |user|
+      # Add personalizations for multiple users like below:
+      add_personalization user.email,
+                          dynamic_template_data: {
+                              homepage_url: "http://example.com/#{user.handle}"
+                          }
+    end
+
+    mailer template_id: 'sendgrid-template-id',
+           subject: 'Our Newsletter for Today'
+  end
+
+  def weekly_report(users)
+    mailer template_id: 'sendgrid-template-id',
+           subject: 'Our Newsletter for Today',
+           to: users.map(&:email) # Multiple to addresses can be specified
+  end
+end
+```
+
+### Sending an email
+
+Send the email by invoking the `deliver` method:
+
+```ruby
+AccountMailer.welcome_email(user).deliver
+```
+
+### Testing
+
+To aid testing, require the `sendgrid_mailer/testing` file, which captures the emails in a `deliveries` array:
+
+```ruby
+require 'sendgrid_mailer/testing'
+
+# ....
+
+  it 'sends the welcome email' do
+    expect(SendGridMailer.deliveries).to be_empty
+
+    AccountMailer.welcome_email(user).deliver
+
+    expect(SendGridMailer.deliveries.length).to eql 1
+
+    last_email = SendGridMailer.deliveries
+
+    expect(last_email['from']['email']).to eql 'hello@example.com'
+    expect(last_email['from']['name']).to eql 'Hello'
+  end
+
+# ....
+
+```
+
+#### Enabling/disabling delivery capture
+
+You can enable/disable delivery capture using the following methods:
+
+```ruby
+SendGridMailer.disable_mock!
+SendGridMailer.enable_mock!
+```
 
 ## Development
 
