@@ -8,8 +8,10 @@ unless ENV['COVERAGE'] == 'false'
 end
 
 require 'bundler/setup'
-require 'sendgrid_mailer'
 require 'webmock/rspec'
+
+require 'sendgrid_mailer'
+require 'sendgrid_mailer/testing'
 
 Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 

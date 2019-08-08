@@ -158,6 +158,8 @@ RSpec.describe SendGridMailer do
     let(:mailer) { TestMailer.mailer }
 
     before do
+      SendGridMailer.disable_mock!
+
       stub_request(:post, 'https://api.sendgrid.com/v3/mail/send')
         .with(
           body: mailer.sg_mail.to_json,
@@ -169,6 +171,8 @@ RSpec.describe SendGridMailer do
         )
         .to_return(status: sendgrid_response_status, body: sendgrid_response_body)
     end
+
+    after { SendGridMailer.enable_mock! }
 
     context 'when an api key is not provided' do
       it 'raises a configuration error' do
