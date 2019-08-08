@@ -37,7 +37,7 @@ class SendGridMailer
   end
 
   def self.respond_to_missing?(method_name, include_private = false)
-    instance_methods.include?(method.to_sym) || super
+    instance_methods.include?(method_name.to_sym) || super
   end
 
   def mailer(template_id: nil, # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
