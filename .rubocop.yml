@@ -12,6 +12,7 @@ Metrics/BlockLength:
 
 Metrics/LineLength:
   Max: 98
+  IgnoreCopDirectives: true
 
 Style/FrozenStringLiteralComment:
   Enabled: false

@@ -109,5 +109,42 @@ RSpec.describe SendGridMailer do
         expect(mail.tracking_settings.click_tracking).to eql 'enable' => false
       end
     end
+
+    describe 'open tracking' do
+      it 'does not set open tracking by default' do
+        mail = DefaultsMailer.mail
+
+        expect(mail.tracking_settings.open_tracking).to be nil
+      end
+
+      it 'can enable open tracking through method' do
+        mail = DefaultsMailer.mail
+
+        mail.open_tracking true, substitution_tag: 'something'
+
+        expect(mail.tracking_settings.open_tracking).to eql 'enable' => true,
+                                                            'substitution_tag' => 'something'
+      end
+
+      it 'can disable open tracking through method' do
+        mail = DefaultsMailer.mail
+
+        mail.open_tracking false
+
+        expect(mail.tracking_settings.open_tracking).to eql 'enable' => false
+      end
+
+      it 'can enable open tracking through mail method' do
+        mail = DefaultsMailer.mail(open_tracking: true)
+
+        expect(mail.tracking_settings.open_tracking).to eql 'enable' => true
+      end
+
+      it 'can disable open tracking through mail method' do
+        mail = DefaultsMailer.mail(open_tracking: false)
+
+        expect(mail.tracking_settings.open_tracking).to eql 'enable' => false
+      end
+    end
   end
 end
