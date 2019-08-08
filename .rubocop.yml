@@ -1,0 +1,10 @@
+require: rubocop-performance
+
+AllCops:
+  TargetRubyVersion: 2.6
+
+Metrics/LineLength:
+  Max: 98
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
