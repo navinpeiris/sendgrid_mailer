@@ -13,7 +13,7 @@ class SendGridMailer
     attr_reader :response
 
     def initialize(response)
-      super('An error occurred while delivering this email. See response for more details.')
+      super("An error occurred while delivering this email: #{response.body}")
 
       @response = response
     end
