@@ -26,16 +26,19 @@ class SendGridMailer
     instance_methods.include?(method.to_sym) || super
   end
 
-  def mail(template_id: nil, # rubocop:disable Metrics/ParameterLists
+  def mail(template_id: nil, # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity
            from: nil,
            from_name: nil,
            subject: nil,
            to: nil,
-           dynamic_template_data: nil)
+           dynamic_template_data: nil,
+           click_tracking: nil)
     self.template_id = template_id if template_id
     self.from = from if from
     self.from_name = from_name if from_name
     self.subject = subject if subject
+
+    self.click_tracking(click_tracking) unless click_tracking.nil?
 
     add_personalization(to, dynamic_template_data: dynamic_template_data) if to
 
@@ -86,6 +89,15 @@ class SendGridMailer
     sg_mail.add_personalization personalization
   end
 
+  def tracking_settings
+    sg_mail.instance_variable_get(:@tracking_settings)
+  end
+
+  def click_tracking(enable, enable_text: nil)
+    tracking_settings.click_tracking = ClickTracking.new enable: enable,
+                                                         enable_text: enable_text
+  end
+
   def sg_mail
     @sg_mail ||= begin
       mail = SendGrid::Mail.new
@@ -94,6 +106,7 @@ class SendGridMailer
       mail.from = Email.new(email: defaults.fetch(:from, 'no-reply@example.com'),
                             name: defaults[:from_name])
       mail.subject = defaults[:subject]
+      mail.tracking_settings = TrackingSettings.new
 
       mail
     end

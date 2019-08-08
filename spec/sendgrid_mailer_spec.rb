@@ -71,4 +71,43 @@ RSpec.describe SendGridMailer do
     expect(mail.personalizations[1]['to']).to eql ['"two@example.com"']
     expect(mail.personalizations[1]['dynamic_template_data']).to eql two: '2'
   end
+
+  describe 'tracking' do
+    describe 'click tracking' do
+      it 'does not set click tracking by default' do
+        mail = DefaultsMailer.mail
+
+        expect(mail.tracking_settings.click_tracking).to be nil
+      end
+
+      it 'can enable click tracking through method' do
+        mail = DefaultsMailer.mail
+
+        mail.click_tracking true, enable_text: 'something'
+
+        expect(mail.tracking_settings.click_tracking).to eql 'enable' => true,
+                                                             'enable_text' => 'something'
+      end
+
+      it 'can disable click tracking through method' do
+        mail = DefaultsMailer.mail
+
+        mail.click_tracking false
+
+        expect(mail.tracking_settings.click_tracking).to eql 'enable' => false
+      end
+
+      it 'can enable click tracking through mail method' do
+        mail = DefaultsMailer.mail(click_tracking: true)
+
+        expect(mail.tracking_settings.click_tracking).to eql 'enable' => true
+      end
+
+      it 'can disable click tracking through mail method' do
+        mail = DefaultsMailer.mail(click_tracking: false)
+
+        expect(mail.tracking_settings.click_tracking).to eql 'enable' => false
+      end
+    end
+  end
 end
