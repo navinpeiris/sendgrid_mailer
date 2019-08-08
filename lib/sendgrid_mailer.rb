@@ -1,9 +1,23 @@
+require 'sendgrid_mailer/railtie'
+require 'sendgrid_mailer/config'
 require 'sendgrid_mailer/version'
 
 require 'sendgrid-ruby'
 
 class SendGridMailer
   include SendGrid
+
+  class Error < StandardError; end
+  class ConfigurationError < Error; end
+  class DeliveryError < Error
+    attr_reader :response
+
+    def initialize(response)
+      super('An error occurred while delivering this email. See response for more details.')
+
+      @response = response
+    end
+  end
 
   def self.defaults
     @defaults || {}
@@ -26,14 +40,14 @@ class SendGridMailer
     instance_methods.include?(method.to_sym) || super
   end
 
-  def mail(template_id: nil, # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-           from: nil,
-           from_name: nil,
-           subject: nil,
-           to: nil,
-           dynamic_template_data: nil,
-           open_tracking: nil,
-           click_tracking: nil)
+  def mailer(template_id: nil, # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+             from: nil,
+             from_name: nil,
+             subject: nil,
+             to: nil,
+             dynamic_template_data: nil,
+             open_tracking: nil,
+             click_tracking: nil)
     self.template_id = template_id if template_id
     self.from = from if from
     self.from_name = from_name if from_name
@@ -103,6 +117,18 @@ class SendGridMailer
   def click_tracking(enable, enable_text: nil)
     tracking_settings.click_tracking = ClickTracking.new enable: enable,
                                                          enable_text: enable_text
+  end
+
+  def deliver
+    sg_api = SendGrid::API.new(api_key: api_key)
+    response = sg_api.client.mail._('send').post(request_body: sg_mail.to_json)
+
+    raise(DeliveryError, response) unless response.status_code.start_with?('2')
+  end
+
+  def api_key
+    SendGridMailer.config.api_key ||
+      raise(ConfigurationError, 'SendGridMailer needs to be configured with an API key')
   end
 
   def sg_mail
