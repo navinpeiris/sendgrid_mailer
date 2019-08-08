@@ -58,10 +58,25 @@ RSpec.describe SendGridMailer do
       expect(mailer.personalizations[0]['dynamic_template_data']).to eql one: '1'
     end
 
+    it 'can add multiple to emails using mailer' do
+      mailer = TestMailer.mailer to: ['one@example.com',
+                                      { email: 'two@example.com', name: 'User Two' },
+                                      'three@example.com']
+
+      expect(mailer.personalizations.length).to eql 1
+
+      expect(mailer.personalizations[0]['to']).to eql [
+        { 'email' => 'one@example.com' },
+        { 'email' => 'two@example.com', 'name' => 'User Two' },
+        { 'email' => 'three@example.com' }
+      ]
+    end
+
     it 'can add personalizations' do
       mailer = TestMailer.mailer
 
       mailer.add_personalization('one@example.com', dynamic_template_data: { one: '1' })
+
       mailer.add_personalization('two@example.com', dynamic_template_data: { two: '2' })
 
       expect(mailer.personalizations.length).to eql 2
@@ -71,6 +86,23 @@ RSpec.describe SendGridMailer do
 
       expect(mailer.personalizations[1]['to']).to eql ['email' => 'two@example.com']
       expect(mailer.personalizations[1]['dynamic_template_data']).to eql two: '2'
+    end
+
+    it 'can add multiple to emails using personalizations' do
+      mailer = TestMailer.mailer
+
+      mailer.add_personalization ['one@example.com',
+                                  { email: 'two@example.com', name: 'User Two' },
+                                  'three@example.com'],
+                                 dynamic_template_data: { one: '1' }
+
+      expect(mailer.personalizations.length).to eql 1
+
+      expect(mailer.personalizations[0]['to']).to eql [
+        { 'email' => 'one@example.com' },
+        { 'email' => 'two@example.com', 'name' => 'User Two' },
+        { 'email' => 'three@example.com' }
+      ]
     end
 
     describe 'tracking' do

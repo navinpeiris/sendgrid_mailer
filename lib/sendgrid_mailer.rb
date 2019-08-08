@@ -99,7 +99,9 @@ class SendGridMailer
 
   def add_personalization(to, dynamic_template_data: nil)
     personalization = Personalization.new
-    personalization.add_to Email.new(email: to)
+
+    add_to_email_to_personalization personalization, to
+
     personalization.add_dynamic_template_data dynamic_template_data if dynamic_template_data
 
     sg_mail.add_personalization personalization
@@ -126,11 +128,6 @@ class SendGridMailer
     raise(DeliveryError, response) unless response.status_code.start_with?('2')
   end
 
-  def api_key
-    SendGridMailer.config.api_key ||
-      raise(ConfigurationError, 'SendGridMailer needs to be configured with an API key')
-  end
-
   def sg_mail
     @sg_mail ||= begin
       mail = SendGrid::Mail.new
@@ -149,5 +146,20 @@ class SendGridMailer
 
   def defaults
     self.class.defaults
+  end
+
+  def api_key
+    SendGridMailer.config.api_key ||
+      raise(ConfigurationError, 'SendGridMailer needs to be configured with an API key')
+  end
+
+  def add_to_email_to_personalization(personalization, to)
+    if to.is_a?(Array)
+      to.each { |t| add_to_email_to_personalization(personalization, t) }
+    elsif to.is_a?(Hash)
+      personalization.add_to Email.new(to)
+    else
+      personalization.add_to Email.new(email: to)
+    end
   end
 end

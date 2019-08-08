@@ -43,7 +43,7 @@ class AccountMailer < SendGridMailer
     mailer template_id: 'sendgrid-template-id',
            from: 'hello@example.com', # Defaults can be overridden here
            subject: 'Welcome to Example App',
-           to: user.email,
+           to: user.email, # Can be email, `{email: user.email, name: user.name}` hash, or an array containing either
            dynamic_template_data: {
                homepage_url: "http://example.com/#{user.handle}"
            },
