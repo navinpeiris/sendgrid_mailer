@@ -99,7 +99,7 @@ class SendGridMailer
 
   def add_personalization(to, dynamic_template_data: nil)
     personalization = Personalization.new
-    personalization.add_to to
+    personalization.add_to Email.new(email: to)
     personalization.add_dynamic_template_data dynamic_template_data if dynamic_template_data
 
     sg_mail.add_personalization personalization

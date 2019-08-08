@@ -17,7 +17,8 @@ RSpec.describe SendGridMailer do
 
     expect(last_email['from']['email']).to eql 'hello@example.com'
     expect(last_email['from']['name']).to eql 'Hello'
-    # expect(last_email['to']['email']).to eql 'recipient@example.com'
     expect(last_email['subject']).to eql 'This is an awesome email'
+
+    expect(last_email['personalizations'][0]['to'][0]['email']).to eql 'recipient@example.com'
   end
 end

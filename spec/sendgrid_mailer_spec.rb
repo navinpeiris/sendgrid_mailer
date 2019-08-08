@@ -54,7 +54,7 @@ RSpec.describe SendGridMailer do
 
       expect(mailer.personalizations.length).to eql 1
 
-      expect(mailer.personalizations[0]['to']).to eql ['"someone@example.com"']
+      expect(mailer.personalizations[0]['to']).to eql ['email' => 'someone@example.com']
       expect(mailer.personalizations[0]['dynamic_template_data']).to eql one: '1'
     end
 
@@ -66,10 +66,10 @@ RSpec.describe SendGridMailer do
 
       expect(mailer.personalizations.length).to eql 2
 
-      expect(mailer.personalizations[0]['to']).to eql ['"one@example.com"']
+      expect(mailer.personalizations[0]['to']).to eql ['email' => 'one@example.com']
       expect(mailer.personalizations[0]['dynamic_template_data']).to eql one: '1'
 
-      expect(mailer.personalizations[1]['to']).to eql ['"two@example.com"']
+      expect(mailer.personalizations[1]['to']).to eql ['email' => 'two@example.com']
       expect(mailer.personalizations[1]['dynamic_template_data']).to eql two: '2'
     end
 
