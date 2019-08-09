@@ -114,6 +114,26 @@ require 'sendgrid_mailer/testing'
 
 ```
 
+### Clearing out deliveries
+
+Clear out the captured deliveries before running a test by adding:
+
+```ruby
+  before(:each) { SendGridMailer.deliveries.clear }
+```
+
+You can do this for all tests by adding the following to your RSpec configuration:
+
+```ruby
+RSpec.configure do |config|
+  config.include MailerHelpers
+
+  config.before(:each) do
+    SendGridMailer.deliveries.clear
+  end
+end
+```
+
 #### Enabling/disabling delivery capture
 
 You can enable/disable delivery capture using the following methods:
