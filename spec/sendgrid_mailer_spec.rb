@@ -111,6 +111,50 @@ RSpec.describe SendGridMailer do
       expect(mailer.categories).to eql %w[one two three]
     end
 
+    describe 'content' do
+      it 'does not add content by default' do
+        mailer = TestMailer.mailer
+
+        expect(mailer.contents).to be_empty
+      end
+
+      it 'allows adding html content through mailer call' do
+        mailer = TestMailer.mailer content_html: '<html><body>My html content</body></html>'
+
+        expect(mailer.contents).to eql [
+          { 'type' => 'text/html', 'value' => '<html><body>My html content</body></html>' }
+        ]
+      end
+
+      it 'allows adding html content through add_html_content method' do
+        mailer = TestMailer.mailer
+
+        mailer.add_html_content '<html><body>My html content</body></html>'
+
+        expect(mailer.contents).to eql [
+          { 'type' => 'text/html', 'value' => '<html><body>My html content</body></html>' }
+        ]
+      end
+
+      it 'allows adding text content through mailer call' do
+        mailer = TestMailer.mailer content_text: 'My text content'
+
+        expect(mailer.contents).to eql [
+          { 'type' => 'text/plain', 'value' => 'My text content' }
+        ]
+      end
+
+      it 'allows adding html content through add_html_content method' do
+        mailer = TestMailer.mailer
+
+        mailer.add_text_content 'My text content'
+
+        expect(mailer.contents).to eql [
+          { 'type' => 'text/plain', 'value' => 'My text content' }
+        ]
+      end
+    end
+
     describe 'tracking' do
       describe 'click tracking' do
         it 'does not set click tracking by default' do

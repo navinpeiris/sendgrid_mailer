@@ -69,6 +69,14 @@ class AccountMailer < SendGridMailer
            subject: 'Our Newsletter for Today',
            to: users.map(&:email) # Multiple to addresses can be specified
   end
+
+  def custom_email(user)
+    # Specify html and/or text content instead of using a template
+    mailer subject: 'Hello!',
+           to: user.email,
+           content_html: '<html><body>My custom html content</body></html>',
+           content_text: 'My custom text content'
+  end
 end
 ```
 

@@ -17,6 +17,9 @@ Metrics/LineLength:
   Max: 98
   IgnoreCopDirectives: true
 
+Metrics/MethodLength:
+  Max: 25
+
 Style/FrozenStringLiteralComment:
   Enabled: false
 

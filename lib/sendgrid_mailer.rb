@@ -46,6 +46,8 @@ class SendGridMailer
              subject: nil,
              to: nil,
              dynamic_template_data: nil,
+             content_html: nil,
+             content_text: nil,
              categories: nil,
              open_tracking: nil,
              click_tracking: nil)
@@ -54,6 +56,9 @@ class SendGridMailer
     self.from_name = from_name if from_name
     self.subject = subject if subject
     self.categories = categories if categories
+
+    add_html_content(content_html) if content_html
+    add_text_content(content_text) if content_text
 
     self.open_tracking(open_tracking) unless open_tracking.nil?
     self.click_tracking(click_tracking) unless click_tracking.nil?
@@ -107,6 +112,18 @@ class SendGridMailer
     personalization.add_dynamic_template_data dynamic_template_data if dynamic_template_data
 
     sg_mail.add_personalization personalization
+  end
+
+  def contents
+    sg_mail.contents
+  end
+
+  def add_html_content(content)
+    sg_mail.add_content Content.new(type: 'text/html', value: content)
+  end
+
+  def add_text_content(content)
+    sg_mail.add_content Content.new(type: 'text/plain', value: content)
   end
 
   def categories
