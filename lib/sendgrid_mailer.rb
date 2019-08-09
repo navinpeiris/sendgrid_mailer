@@ -104,12 +104,16 @@ class SendGridMailer
     sg_mail.personalizations
   end
 
-  def add_personalization(to, dynamic_template_data: nil)
+  def add_personalization(to, dynamic_template_data: nil, substitutions: {})
     personalization = Personalization.new
 
     add_to_email_to_personalization personalization, to
 
     personalization.add_dynamic_template_data dynamic_template_data if dynamic_template_data
+
+    substitutions.each do |key, value|
+      personalization.add_substitution(Substitution.new(key: key, value: value))
+    end
 
     sg_mail.add_personalization personalization
   end

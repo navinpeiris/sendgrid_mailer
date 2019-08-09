@@ -75,14 +75,21 @@ RSpec.describe SendGridMailer do
     it 'can add personalizations' do
       mailer = TestMailer.mailer
 
-      mailer.add_personalization('one@example.com', dynamic_template_data: { one: '1' })
+      mailer.add_personalization 'one@example.com',
+                                 dynamic_template_data: { one: '1' },
+                                 substitutions: {
+                                   '-name-' => 'Some Name',
+                                   '-age-' => '18'
+                                 }
 
-      mailer.add_personalization('two@example.com', dynamic_template_data: { two: '2' })
+      mailer.add_personalization 'two@example.com', dynamic_template_data: { two: '2' }
 
       expect(mailer.personalizations.length).to eql 2
 
       expect(mailer.personalizations[0]['to']).to eql ['email' => 'one@example.com']
       expect(mailer.personalizations[0]['dynamic_template_data']).to eql one: '1'
+      expect(mailer.personalizations[0]['substitutions']).to eql '-name-' => 'Some Name',
+                                                                 '-age-' => '18'
 
       expect(mailer.personalizations[1]['to']).to eql ['email' => 'two@example.com']
       expect(mailer.personalizations[1]['dynamic_template_data']).to eql two: '2'
