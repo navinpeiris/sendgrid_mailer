@@ -118,6 +118,12 @@ RSpec.describe SendGridMailer do
       expect(mailer.categories).to eql %w[one two three]
     end
 
+    it 'can add custom args' do
+      mailer = TestMailer.mailer custom_args: { 'one' => 'two', 'foo' => 'bar' }
+
+      expect(mailer.custom_args).to eql 'one' => 'two', 'foo' => 'bar'
+    end
+
     describe 'content' do
       it 'does not add content by default' do
         mailer = TestMailer.mailer

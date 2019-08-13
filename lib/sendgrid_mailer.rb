@@ -4,7 +4,7 @@ require 'sendgrid_mailer/version'
 
 require 'sendgrid-ruby'
 
-class SendGridMailer
+class SendGridMailer # rubocop:disable Metrics/ClassLength
   include SendGrid
 
   class Error < StandardError; end
@@ -49,6 +49,7 @@ class SendGridMailer
              content_html: nil,
              content_text: nil,
              categories: nil,
+             custom_args: nil,
              open_tracking: nil,
              click_tracking: nil)
     self.template_id = template_id if template_id
@@ -60,10 +61,12 @@ class SendGridMailer
     add_html_content(content_html) if content_html
     add_text_content(content_text) if content_text
 
+    add_personalization(to, dynamic_template_data: dynamic_template_data) if to
+
+    add_custom_args(custom_args) if custom_args
+
     self.open_tracking(open_tracking) unless open_tracking.nil?
     self.click_tracking(click_tracking) unless click_tracking.nil?
-
-    add_personalization(to, dynamic_template_data: dynamic_template_data) if to
 
     self
   end
@@ -138,6 +141,20 @@ class SendGridMailer
     categories.each do |category|
       sg_mail.add_category Category.new(name: category)
     end
+  end
+
+  def custom_args
+    sg_mail.custom_args
+  end
+
+  def add_custom_args(custom_args)
+    custom_args.each do |key, value|
+      add_custom_arg key, value
+    end
+  end
+
+  def add_custom_arg(key, value)
+    sg_mail.add_custom_arg CustomArg.new(key: key, value: value)
   end
 
   def tracking_settings
