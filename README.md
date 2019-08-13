@@ -1,5 +1,7 @@
 # SendGrid Mailer
 
+[![Build Status](https://travis-ci.org/navinpeiris/sendgrid_mailer.svg?branch=master)](https://travis-ci.org/navinpeiris/sendgrid_mailer)
+
 Rails mailer for sending template & content based emails through SendGrid
 
 ## Installation
