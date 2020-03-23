@@ -106,7 +106,7 @@ require 'sendgrid_mailer/testing'
 
     expect(SendGridMailer.deliveries.length).to eql 1
 
-    last_email = SendGridMailer.deliveries
+    last_email = SendGridMailer.deliveries.last
 
     expect(last_email['from']['email']).to eql 'hello@example.com'
     expect(last_email['from']['name']).to eql 'Hello'
