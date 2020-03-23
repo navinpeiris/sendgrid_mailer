@@ -16,7 +16,7 @@ class SendGridMailer
   end
 
   def self.deliveries
-    @deliveries ||= []
+    @@deliveries ||= [] # rubocop:disable Style/ClassVars
   end
 
   alias original_deliver deliver
