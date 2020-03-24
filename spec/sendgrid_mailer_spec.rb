@@ -14,6 +14,8 @@ RSpec.describe SendGridMailer do
       expect(mailer.template_id).to eql 'template-id'
       expect(mailer.from).to eql 'notifications@example.com'
       expect(mailer.from_name).to eql 'Example Notifier'
+      expect(mailer.reply_to).to eql nil
+      expect(mailer.reply_to_name).to eql nil
       expect(mailer.subject).to eql 'Hello from example'
     end
 
@@ -21,11 +23,15 @@ RSpec.describe SendGridMailer do
       mailer = TestMailer.mailer template_id: 'new-template-id',
                                  from: 'two@example.com',
                                  from_name: 'Two',
+                                 reply_to: 'reply@example.com',
+                                 reply_to_name: 'Reply To',
                                  subject: 'Subject Two'
 
       expect(mailer.template_id).to eql 'new-template-id'
       expect(mailer.from).to eql 'two@example.com'
       expect(mailer.from_name).to eql 'Two'
+      expect(mailer.reply_to).to eql 'reply@example.com'
+      expect(mailer.reply_to_name).to eql 'Reply To'
       expect(mailer.subject).to eql 'Subject Two'
     end
 

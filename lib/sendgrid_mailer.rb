@@ -40,9 +40,11 @@ class SendGridMailer # rubocop:disable Metrics/ClassLength
     instance_methods.include?(method_name.to_sym) || super
   end
 
-  def mailer(template_id: nil, # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  def mailer(template_id: nil, # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
              from: nil,
              from_name: nil,
+             reply_to: nil,
+             reply_to_name: nil,
              subject: nil,
              to: nil,
              dynamic_template_data: nil,
@@ -55,6 +57,8 @@ class SendGridMailer # rubocop:disable Metrics/ClassLength
     self.template_id = template_id if template_id
     self.from = from if from
     self.from_name = from_name if from_name
+    self.reply_to = reply_to if reply_to
+    self.reply_to_name = reply_to_name if reply_to_name
     self.subject = subject if subject
     self.categories = categories if categories
 
@@ -93,6 +97,22 @@ class SendGridMailer # rubocop:disable Metrics/ClassLength
 
   def from_name=(name)
     sg_mail.from = Email.new(email: from, name: name)
+  end
+
+  def reply_to
+    sg_mail.reply_to&.fetch('email', nil)
+  end
+
+  def reply_to=(email)
+    sg_mail.reply_to = Email.new(email: email, name: reply_to_name)
+  end
+
+  def reply_to_name
+    sg_mail.reply_to&.fetch('name', nil)
+  end
+
+  def reply_to_name=(name)
+    sg_mail.reply_to = Email.new(email: reply_to, name: name)
   end
 
   def subject
