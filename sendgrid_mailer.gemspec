@@ -39,4 +39,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec_junit_formatter', '~> 0.4'
   spec.add_development_dependency 'terminal-notifier', '~> 2.0'
   spec.add_development_dependency 'terminal-notifier-guard', '~> 1.7'
+
+  # TODO: FIXME: The following is added due to an error with guard with pry 1.3.
+  # Remove after fixed. See: https://github.com/guard/guard/pull/955
+  spec.add_development_dependency 'pry', '< 0.13'
 end
