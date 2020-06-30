@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov', '~> 0.16'
   spec.add_development_dependency 'webmock', '~> 3.4'
 
-  spec.add_development_dependency 'guard-bundler', '~> 2.1'
+  spec.add_development_dependency 'guard-bundler', '~> 3.0'
   spec.add_development_dependency 'guard-rspec', '~> 4.7'
   spec.add_development_dependency 'guard-rubocop', '~> 1.3'
   spec.add_development_dependency 'rspec_junit_formatter', '~> 0.4'
