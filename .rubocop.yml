@@ -1,7 +1,8 @@
 require: rubocop-performance
 
 AllCops:
-  TargetRubyVersion: 2.6
+  NewCops: enable
+  TargetRubyVersion: 2.7
 
 Metrics/BlockLength:
   Exclude:
@@ -13,7 +14,7 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Max: 150
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 98
   IgnoreCopDirectives: true
 
