@@ -28,9 +28,9 @@ class SendGridMailer # rubocop:disable Metrics/ClassLength
     @defaults.merge!(args)
   end
 
-  def self.method_missing(method, *args)
+  def self.method_missing(method, *args, **kwargs)
     if instance_methods.include?(method.to_sym)
-      new.method(method).call(*args)
+      new.method(method).call(*args, **kwargs)
     else
       super
     end
