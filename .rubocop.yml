@@ -1,8 +1,9 @@
-require: rubocop-performance
+plugins: rubocop-performance
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 4.0
+  SuggestExtensions: false
 
 Metrics/BlockLength:
   Exclude:
@@ -16,7 +17,7 @@ Metrics/ClassLength:
 
 Layout/LineLength:
   Max: 98
-  IgnoreCopDirectives: true
+  AllowCopDirectives: true
 
 Metrics/MethodLength:
   Max: 25
@@ -26,3 +27,10 @@ Style/FrozenStringLiteralComment:
 
 Style/Documentation:
   Enabled: false
+
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - "spec/**/*"

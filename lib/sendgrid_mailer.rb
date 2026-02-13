@@ -9,6 +9,7 @@ class SendGridMailer # rubocop:disable Metrics/ClassLength
 
   class Error < StandardError; end
   class ConfigurationError < Error; end
+
   class DeliveryError < Error
     attr_reader :response
 
@@ -28,16 +29,16 @@ class SendGridMailer # rubocop:disable Metrics/ClassLength
     @defaults.merge!(args)
   end
 
-  def self.method_missing(method, *args, **kwargs)
-    if instance_methods.include?(method.to_sym)
-      new.method(method).call(*args, **kwargs)
+  def self.method_missing(method, *, **)
+    if method_defined?(method.to_sym)
+      new.method(method).call(*, **)
     else
       super
     end
   end
 
   def self.respond_to_missing?(method_name, include_private = false)
-    instance_methods.include?(method_name.to_sym) || super
+    method_defined?(method_name.to_sym) || super
   end
 
   def mailer(template_id: nil, # rubocop:disable Metrics/ParameterLists, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
@@ -227,7 +228,7 @@ class SendGridMailer # rubocop:disable Metrics/ClassLength
     if to.is_a?(Array)
       to.each { |t| add_to_email_to_personalization(personalization, t) }
     elsif to.is_a?(Hash)
-      personalization.add_to Email.new(to)
+      personalization.add_to Email.new(**to)
     else
       personalization.add_to Email.new(email: to)
     end

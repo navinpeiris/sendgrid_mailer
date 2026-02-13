@@ -1,8 +1,10 @@
+require 'ostruct'
+
 class SendGridMailer
   if defined?(Rails)
-    def self.configure(&block)
+    def self.configure
       if block_given?
-        block.call(SendGridMailer::Railtie.config.sendgrid_mailer)
+        yield(SendGridMailer::Railtie.config.sendgrid_mailer)
       else
         SendGridMailer::Railtie.config.sendgrid_mailer
       end
@@ -13,7 +15,7 @@ class SendGridMailer
     end
   else
     def self.config
-      @@config ||= OpenStruct.new(api_key: nil) # rubocop:disable Style/ClassVars
+      @@config ||= OpenStruct.new(api_key: nil) # rubocop:disable Style/ClassVars, Style/OpenStructUse
     end
   end
 end
